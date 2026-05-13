@@ -2,7 +2,7 @@
 
 This is my personal UI/UX design portfolio, built as part of my internship applications.
 
-🔗 Live site: https://YOUR-USERNAME.github.io/portfolio
+🔗 Live site: https://amberlily1501.github.io/portfolio
 
 ## About
 I'm a Computer Science student (6th semester) at FAST NUCES, Chiniot-Faisalabad,
