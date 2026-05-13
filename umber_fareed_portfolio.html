@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Umber Fareed — UI/UX Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0d14;
+    --paper: #f7f5f0;
+    --accent: #ff3d5a;
+    --accent2: #7c3aed;
+    --warm: #ff9f43;
+    --muted: #8a8799;
+    --card-bg: #ffffff;
+    --border: #e5e2db;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, width 0.2s, height 0.2s, background 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.35s ease, width 0.3s, height 0.3s, opacity 0.3s;
+    transform: translate(-50%, -50%);
+  }
+  a:hover ~ .cursor, button:hover ~ .cursor { transform: translate(-50%,-50%) scale(2); }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+    opacity: 0.5;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(247,245,240,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.1rem;
+    letter-spacing: -0.02em; color: var(--ink);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.85rem; font-weight: 500;
+    color: var(--muted); text-decoration: none;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 3rem;
+    padding-top: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding-right: 4rem;
+    position: relative; z-index: 2;
+  }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--accent); color: #fff;
+    font-size: 0.75rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.3rem 0.9rem; border-radius: 2px;
+    width: fit-content; margin-bottom: 1.8rem;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-tag::before {
+    content: ''; width: 6px; height: 6px;
+    background: #fff; border-radius: 50;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
+
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: clamp(3.5rem, 6vw, 6rem);
+    line-height: 0.95; letter-spacing: -0.03em;
+    color: var(--ink);
+    animation: fadeUp 0.7s ease 0.1s both;
+  }
+  .hero-name .line2 {
+    display: block;
+    -webkit-text-stroke: 2px var(--ink);
+    color: transparent;
+  }
+  .hero-name .accent-dot { color: var(--accent); }
+
+  .hero-role {
+    font-size: 1rem; color: var(--muted); font-weight: 300;
+    margin-top: 1.5rem; max-width: 420px; line-height: 1.7;
+    animation: fadeUp 0.7s ease 0.2s both;
+  }
+
+  .hero-cta {
+    display: flex; gap: 1rem; margin-top: 2.5rem;
+    animation: fadeUp 0.7s ease 0.3s both;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.85rem 1.8rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem; font-weight: 700;
+    letter-spacing: 0.05em; text-decoration: none;
+    border: none; cursor: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary {
+    background: var(--ink); color: var(--paper);
+  }
+  .btn-primary:hover {
+    transform: translate(-3px,-3px);
+    box-shadow: 6px 6px 0 var(--accent);
+  }
+  .btn-secondary {
+    background: transparent; color: var(--ink);
+    border: 2px solid var(--ink);
+  }
+  .btn-secondary:hover {
+    transform: translate(-3px,-3px);
+    box-shadow: 6px 6px 0 var(--accent2);
+  }
+
+  .hero-right {
+    display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 2;
+  }
+
+  .hero-visual {
+    width: 380px; height: 480px;
+    position: relative;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+
+  .hero-card {
+    position: absolute;
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    padding: 1.2rem;
+    box-shadow: 8px 8px 0 var(--ink);
+  }
+  .hero-card.c1 {
+    width: 260px; top: 20px; left: 0;
+    animation: float 4s ease-in-out infinite;
+  }
+  .hero-card.c2 {
+    width: 200px; bottom: 40px; right: 0;
+    animation: float 5s ease-in-out 1s infinite;
+  }
+  .hero-card.c3 {
+    width: 160px; top: 50%; right: 20px;
+    transform: translateY(-50%);
+    animation: float 3.5s ease-in-out 0.5s infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .hero-card.c3 {
+    animation: float2 3.5s ease-in-out 0.5s infinite;
+  }
+  @keyframes float2 {
+    0%, 100% { transform: translateY(-50%); }
+    50% { transform: translateY(calc(-50% - 10px)); }
+  }
+
+  .card-chip {
+    display: inline-block;
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 0.2rem 0.5rem;
+    border-radius: 2px; margin-bottom: 0.6rem;
+  }
+  .chip-red { background: #ffe5e9; color: var(--accent); }
+  .chip-purple { background: #ede9fe; color: var(--accent2); }
+  .chip-warm { background: #fff3e0; color: var(--warm); }
+
+  .card-bar {
+    height: 6px; border-radius: 99px;
+    margin-top: 0.5rem; margin-bottom: 0.25rem;
+  }
+  .card-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 0.7rem; color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-bg-text {
+    position: absolute; bottom: -2rem; right: -1rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 10rem; font-weight: 800;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(13,13,20,0.06);
+    pointer-events: none; user-select: none;
+    z-index: 1; white-space: nowrap;
+  }
+
+  /* ── MARQUEE ── */
+  .marquee-wrap {
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1.5px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    overflow: hidden;
+    padding: 0.8rem 0;
+    position: relative; z-index: 3;
+  }
+  .marquee-track {
+    display: flex; gap: 2rem;
+    width: max-content;
+    animation: marquee 18s linear infinite;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .marquee-item { white-space: nowrap; }
+  .marquee-sep { color: var(--accent); }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ── SECTIONS ── */
+  section { position: relative; z-index: 2; }
+
+  .section-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 6rem 3rem;
+  }
+
+  .section-label {
+    display: flex; align-items: center; gap: 1rem;
+    font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1; height: 1px; background: var(--border);
+    max-width: 80px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.05; letter-spacing: -0.02em;
+    margin-bottom: 3rem;
+  }
+  .section-title em {
+    font-style: normal;
+    -webkit-text-stroke: 1.5px var(--ink);
+    color: transparent;
+  }
+
+  /* ── ABOUT ── */
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: center;
+  }
+  .about-text p {
+    font-size: 1rem; line-height: 1.8; color: #444;
+    margin-bottom: 1.2rem;
+  }
+  .about-stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .stat-card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    padding: 1.5rem;
+    border-radius: 4px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .stat-card:hover {
+    transform: translate(-4px,-4px);
+    box-shadow: 6px 6px 0 var(--accent);
+  }
+  .stat-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem; font-weight: 800;
+    color: var(--accent); line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .stat-label { font-size: 0.85rem; color: var(--muted); font-weight: 400; }
+
+  /* ── SKILLS ── */
+  .skills-section { background: var(--ink); color: var(--paper); }
+  .skills-section .section-label { color: var(--accent); }
+  .skills-section .section-title { color: var(--paper); }
+  .skills-section .section-title em { -webkit-text-stroke-color: var(--paper); }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .skill-block {
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 2rem;
+    border-radius: 4px;
+    transition: background 0.25s, border-color 0.25s, transform 0.2s;
+  }
+  .skill-block:hover {
+    background: rgba(255,61,90,0.08);
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+  .skill-icon {
+    font-size: 1.8rem; margin-bottom: 1rem; display: block;
+  }
+  .skill-block h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    margin-bottom: 0.6rem;
+  }
+  .skill-block p {
+    font-size: 0.85rem; color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+  .skill-tag {
+    font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 2px; color: rgba(255,255,255,0.6);
+  }
+
+  /* ── PROJECTS ── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  .project-card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+    text-decoration: none; color: inherit;
+    display: block;
+  }
+  .project-card:hover {
+    transform: translate(-5px,-5px);
+    box-shadow: 8px 8px 0 var(--ink);
+  }
+  .project-card.featured {
+    grid-column: 1 / -1;
+  }
+  .project-thumb {
+    height: 200px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    font-family: 'Syne', sans-serif;
+    font-size: 5rem; font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+  .project-card.featured .project-thumb { height: 280px; font-size: 7rem; }
+
+  .thumb-p1 { background: linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%); color: #ffb3c1; }
+  .thumb-p2 { background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); color: #c4b5fd; }
+  .thumb-p3 { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); color: #ffcc80; }
+  .thumb-p4 { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); color: #a5d6a7; }
+  .thumb-p5 { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); color: #90caf9; }
+
+  .thumb-label {
+    position: absolute; bottom: 1rem; right: 1rem;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    background: var(--ink); color: var(--paper);
+    padding: 0.25rem 0.6rem; border-radius: 2px;
+  }
+
+  .project-body { padding: 1.5rem; }
+  .project-type {
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.5rem;
+  }
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    margin-bottom: 0.6rem; color: var(--ink);
+  }
+  .project-desc {
+    font-size: 0.875rem; color: var(--muted);
+    line-height: 1.65; margin-bottom: 1rem;
+  }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .project-tag {
+    font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 2px; color: var(--muted);
+  }
+  .project-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.8rem; font-weight: 700;
+    color: var(--accent); text-decoration: none;
+    margin-top: 1rem;
+    letter-spacing: 0.04em;
+    transition: gap 0.2s;
+  }
+  .project-link:hover { gap: 0.7rem; }
+
+  /* ── PROCESS ── */
+  .process-section { background: #faf9f6; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .process-steps {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0; position: relative;
+  }
+  .process-steps::before {
+    content: '';
+    position: absolute; top: 2rem; left: 10%; right: 10%;
+    height: 1px; background: var(--border);
+    z-index: 0;
+  }
+  .process-step { padding: 0 1.5rem; text-align: center; position: relative; z-index: 1; }
+  .step-num {
+    width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 0.9rem; margin: 0 auto 1rem;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    border-radius: 50%;
+    transition: background 0.2s, color 0.2s;
+  }
+  .process-step:hover .step-num {
+    background: var(--accent); border-color: var(--accent); color: #fff;
+  }
+  .step-title {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 0.95rem; margin-bottom: 0.5rem;
+  }
+  .step-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── CONTACT ── */
+  .contact-section { background: var(--ink); }
+  .contact-inner {
+    max-width: 800px; margin: 0 auto;
+    padding: 8rem 3rem;
+    text-align: center;
+  }
+  .contact-inner .section-label { justify-content: center; }
+  .contact-inner .section-label::after { display: none; }
+  .contact-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 800; color: var(--paper);
+    line-height: 1; letter-spacing: -0.03em;
+    margin: 1rem 0 2rem;
+  }
+  .contact-title .outline {
+    -webkit-text-stroke: 2px var(--paper);
+    color: transparent;
+  }
+  .contact-subtitle {
+    font-size: 1rem; color: rgba(255,255,255,0.45);
+    line-height: 1.7; max-width: 500px; margin: 0 auto 3rem;
+  }
+  .contact-links {
+    display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+  }
+  .contact-link {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.9rem 2rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem; font-weight: 700;
+    letter-spacing: 0.05em;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    color: var(--paper); text-decoration: none;
+    border-radius: 2px;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .contact-link:hover {
+    background: var(--accent); border-color: var(--accent);
+    transform: translate(-3px,-3px);
+    box-shadow: 5px 5px 0 rgba(255,61,90,0.3);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding: 1.5rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 0.9rem; color: var(--paper);
+    text-decoration: none;
+  }
+  .footer-logo span { color: var(--accent); }
+  .footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.3); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 2rem 1.5rem; padding-top: 90px; }
+    .hero-right { display: none; }
+    .section-inner { padding: 4rem 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card.featured { grid-column: auto; }
+    .process-steps { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">UF<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-left">
+    <div class="hero-tag">Available for Internship</div>
+    <h1 class="hero-name">
+      Umber<br>
+      <span class="line2">Fareed<span class="accent-dot">.</span></span>
+    </h1>
+    <p class="hero-role">
+      UI/UX Designer &amp; CS Student at FAST NUCES — crafting interfaces that feel as good as they look.
+      Figma-first, detail-obsessed, user-always.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Work ↓</a>
+      <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-visual">
+      <!-- Floating card 1 -->
+      <div class="hero-card c1">
+        <span class="card-chip chip-red">E-Learning</span>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:0.8rem;">Win &amp; Learn Platform</div>
+        <div class="card-bar-label"><span>UX Score</span><span>94%</span></div>
+        <div class="card-bar" style="background:#ffe5e9;"><div class="card-bar" style="width:94%;background:var(--accent);margin:0;"></div></div>
+        <div class="card-bar-label" style="margin-top:0.5rem;"><span>Usability</span><span>88%</span></div>
+        <div class="card-bar" style="background:#ffe5e9;"><div class="card-bar" style="width:88%;background:#ff8fa3;margin:0;"></div></div>
+      </div>
+      <!-- Floating card 2 -->
+      <div class="hero-card c2">
+        <span class="card-chip chip-purple">Mobile UI</span>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:0.4rem;">Music App</div>
+        <div style="font-size:0.78rem;color:var(--muted);">Mobile-first · Figma</div>
+        <div style="display:flex;gap:0.3rem;margin-top:0.8rem;">
+          <div style="height:4px;flex:3;background:var(--accent2);border-radius:99px;"></div>
+          <div style="height:4px;flex:1;background:#ede9fe;border-radius:99px;"></div>
+        </div>
+      </div>
+      <!-- Floating card 3 -->
+      <div class="hero-card c3">
+        <span class="card-chip chip-warm">Game UI</span>
+        <div style="font-size:1.8rem;margin:0.4rem 0;">🎮</div>
+        <div style="font-size:0.75rem;color:var(--muted);">Unity Interface</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-bg-text">DESIGN</div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">UI/UX Design</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Figma Prototyping</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Mobile Interfaces</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Web Design</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Game UI</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Design Systems</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">User Research</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Wireframing</span>
+    <span class="marquee-sep">✦</span>
+    <!-- duplicate for seamless loop -->
+    <span class="marquee-item">UI/UX Design</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Figma Prototyping</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Mobile Interfaces</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Web Design</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Game UI</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Design Systems</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">User Research</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Wireframing</span>
+    <span class="marquee-sep">✦</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <div class="section-label">About Me</div>
+        <h2 class="section-title">Designing with <em>purpose</em> &amp; precision</h2>
+        <p>I'm a 6th-semester Computer Science student at FAST NUCES, Chiniot-Faisalabad, with a deep passion for UI/UX design. I believe great interfaces are built on empathy — understanding users before opening Figma.</p>
+        <p>From educational platforms and e-commerce apps to game menus and music players, I explore diverse design contexts and push myself to solve real interaction problems with thoughtful, clean visuals.</p>
+        <a href="#projects" class="btn btn-primary" style="margin-top:1.5rem;display:inline-flex;">See My Work ↓</a>
+      </div>
+      <div class="about-stats reveal">
+        <div class="stat-card">
+          <div class="stat-number">8+</div>
+          <div class="stat-label">Projects Designed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">3+</div>
+          <div class="stat-label">Design Domains</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">6th</div>
+          <div class="stat-label">Semester @ FAST NUCES</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">∞</div>
+          <div class="stat-label">Curiosity for UX</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" class="skills-section">
+  <div class="section-inner">
+    <div class="section-label">Skills &amp; Tools</div>
+    <h2 class="section-title reveal">What I <em>bring</em> to the table</h2>
+    <div class="skills-grid">
+      <div class="skill-block reveal">
+        <span class="skill-icon">✦</span>
+        <h3>UI/UX Design</h3>
+        <p>Crafting interfaces that are visually strong and deeply intuitive — from first sketch to final prototype.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Wireframing</span>
+          <span class="skill-tag">Prototyping</span>
+          <span class="skill-tag">Visual Design</span>
+        </div>
+      </div>
+      <div class="skill-block reveal">
+        <span class="skill-icon">◈</span>
+        <h3>Figma</h3>
+        <p>My primary tool for everything — components, auto-layout, interactive prototypes, and design systems.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Components</span>
+          <span class="skill-tag">Auto-layout</span>
+          <span class="skill-tag">Variants</span>
+        </div>
+      </div>
+      <div class="skill-block reveal">
+        <span class="skill-icon">◻</span>
+        <h3>Frontend Basics</h3>
+        <p>Bridging design and development with foundational HTML &amp; CSS — making my designs more dev-friendly.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">HTML5</span>
+          <span class="skill-tag">CSS3</span>
+          <span class="skill-tag">Responsive</span>
+        </div>
+      </div>
+      <div class="skill-block reveal">
+        <span class="skill-icon">⬡</span>
+        <h3>Design Systems</h3>
+        <p>Building reusable foundations with consistent color, typography, spacing, and component libraries.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Color Systems</span>
+          <span class="skill-tag">Typography</span>
+          <span class="skill-tag">Spacing</span>
+        </div>
+      </div>
+      <div class="skill-block reveal">
+        <span class="skill-icon">▲</span>
+        <h3>Game &amp; App UI</h3>
+        <p>Designing for non-traditional contexts — game menus in Unity style, and mobile-first app experiences.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Unity UI</span>
+          <span class="skill-tag">Mobile-first</span>
+          <span class="skill-tag">Game UX</span>
+        </div>
+      </div>
+      <div class="skill-block reveal">
+        <span class="skill-icon">◎</span>
+        <h3>Research &amp; Empathy</h3>
+        <p>Starting with the user — studying needs, mapping flows, and validating design decisions early.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">User Flows</span>
+          <span class="skill-tag">User Research</span>
+          <span class="skill-tag">Iteration</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-inner">
+    <div class="section-label">Selected Work</div>
+    <h2 class="section-title reveal">Projects that <em>made</em> me</h2>
+    <div class="projects-grid">
+
+      <!-- Featured -->
+      <a href="https://www.figma.com/design/lMc0gVlTK5qD1JibdA1Zso/Win-and-Learn" target="_blank" class="project-card featured reveal">
+        <div class="project-thumb thumb-p1">
+          W&amp;L
+          <span class="thumb-label">Featured</span>
+        </div>
+        <div class="project-body">
+          <div class="project-type">E-Learning Platform</div>
+          <div class="project-title">Win and Learn — Online Learning Platform</div>
+          <div class="project-desc">A full educational dashboard prototype designed to give students an engaging, modern learning experience. Built with clear information hierarchy, intuitive navigation, and a responsive layout that scales across screen sizes.</div>
+          <div class="project-tags">
+            <span class="project-tag">Figma</span>
+            <span class="project-tag">Dashboard</span>
+            <span class="project-tag">Education</span>
+            <span class="project-tag">Prototyping</span>
+          </div>
+          <span class="project-link">View on Figma →</span>
+        </div>
+      </a>
+
+      <a href="https://www.figma.com/design/YdNJWTY7yfHOLk2eojBQYH/Project-task" target="_blank" class="project-card reveal">
+        <div class="project-thumb thumb-p2">E/C</div>
+        <div class="project-body">
+          <div class="project-type">E-Commerce · Web &amp; Mobile</div>
+          <div class="project-title">Product Detail Page</div>
+          <div class="project-desc">A dual-platform product detail UI for a shopping app — combining product-focused layout with mobile-friendly adaptations and modern e-commerce visual conventions.</div>
+          <div class="project-tags">
+            <span class="project-tag">Figma</span>
+            <span class="project-tag">E-Commerce</span>
+            <span class="project-tag">Responsive</span>
+          </div>
+          <span class="project-link">View on Figma →</span>
+        </div>
+      </a>
+
+      <a href="https://www.figma.com/design/Vle65YoLUrGN2yU5k9iBQv/activity-1" target="_blank" class="project-card reveal">
+        <div class="project-thumb thumb-p3">♪</div>
+        <div class="project-body">
+          <div class="project-type">Mobile App</div>
+          <div class="project-title">Music App Interface</div>
+          <div class="project-desc">A mobile music player UI built around accessibility and visual simplicity. Clean interactive components with a smooth visual flow — mobile-first throughout.</div>
+          <div class="project-tags">
+            <span class="project-tag">Figma</span>
+            <span class="project-tag">Mobile</span>
+            <span class="project-tag">Accessibility</span>
+          </div>
+          <span class="project-link">View on Figma →</span>
+        </div>
+      </a>
+
+      <a href="https://www.figma.com/design/WS6tencocEsQbIAnNHaDXG/Game" target="_blank" class="project-card reveal">
+        <div class="project-thumb thumb-p4">🎮</div>
+        <div class="project-body">
+          <div class="project-type">Game UI · Unity</div>
+          <div class="project-title">Game Menu Interface</div>
+          <div class="project-desc">An immersive game menu concept designed for Unity-based development — featuring game-inspired visual style and an interactive menu structure built for beginner-friendly engagement.</div>
+          <div class="project-tags">
+            <span class="project-tag">Figma</span>
+            <span class="project-tag">Game Design</span>
+            <span class="project-tag">Unity UI</span>
+          </div>
+          <span class="project-link">View on Figma →</span>
+        </div>
+      </a>
+
+      <a href="https://www.figma.com/design/3jfWGzstuUiIH46GT7E2Ww/landing-screen" target="_blank" class="project-card reveal">
+        <div class="project-thumb thumb-p5">↗</div>
+        <div class="project-body">
+          <div class="project-type">Landing Page</div>
+          <div class="project-title">Landing Screen Concept</div>
+          <div class="project-desc">A modern, minimal landing screen with balanced typography, strong visual hierarchy, and a clean user-focused layout that prioritizes first impressions.</div>
+          <div class="project-tags">
+            <span class="project-tag">Figma</span>
+            <span class="project-tag">Minimalist</span>
+            <span class="project-tag">Typography</span>
+          </div>
+          <span class="project-link">View on Figma →</span>
+        </div>
+      </a>
+
+      <a href="https://www.figma.com/design/tHg0gNHrOU2snFKrB6VtNa/UI-foundation" target="_blank" class="project-card reveal">
+        <div class="project-thumb" style="background:linear-gradient(135deg,#f3e8ff,#e9d5ff);color:#c4b5fd;font-size:3rem;">⬡⬡</div>
+        <div class="project-body">
+          <div class="project-type">Design System</div>
+          <div class="project-title">UI/UX Foundation</div>
+          <div class="project-desc">A foundational project exploring layout structure, color systems, typography scales, spacing, and component design — the building blocks of every great interface.</div>
+          <div class="project-tags">
+            <span class="project-tag">Figma</span>
+            <span class="project-tag">Design System</span>
+            <span class="project-tag">Components</span>
+          </div>
+          <span class="project-link">View on Figma →</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" class="process-section">
+  <div class="section-inner">
+    <div class="section-label">My Approach</div>
+    <h2 class="section-title reveal" style="text-align:center;margin-bottom:4rem;">How I <em>design</em></h2>
+    <div class="process-steps">
+      <div class="process-step reveal">
+        <div class="step-num">01</div>
+        <div class="step-title">Understand</div>
+        <div class="step-desc">Define the user's goals, pain points, and context before touching any tool.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">02</div>
+        <div class="step-title">Explore</div>
+        <div class="step-desc">Sketch, wireframe, and explore multiple directions — diverge before converging.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">03</div>
+        <div class="step-title">Design</div>
+        <div class="step-desc">Build high-fidelity screens in Figma with consistent components and visual language.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">04</div>
+        <div class="step-title">Refine</div>
+        <div class="step-desc">Iterate based on feedback, test interactions, and polish every detail.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <div class="contact-inner">
+    <div class="section-label" style="color:var(--accent);">Let's Connect</div>
+    <h2 class="contact-title">
+      Let's build<br><span class="outline">something great</span>
+    </h2>
+    <p class="contact-subtitle">I'm actively looking for UI/UX internship opportunities. If you're building something meaningful and need a designer who cares deeply about user experience — let's talk.</p>
+    <div class="contact-links">
+      <a href="https://www.linkedin.com/in/umber-fareed-53097731b" target="_blank" class="contact-link">
+        ↗ LinkedIn Profile
+      </a>
+      <a href="https://www.figma.com/@umber_fareed" target="_blank" class="contact-link">
+        ◈ Figma Portfolio
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">UF<span>.</span></a>
+  <span class="footer-copy">© 2025 Umber Fareed · UI/UX Designer · FAST NUCES Faisalabad</span>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animateCursor() {
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  // Hover cursor state
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(2.5)';
+      cursor.style.background = 'var(--accent2)';
+      ring.style.opacity = '0';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+      cursor.style.background = 'var(--accent)';
+      ring.style.opacity = '1';
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
